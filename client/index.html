@@ -12,12 +12,19 @@
 
     const form = document.getElementById('form')
     const input = document.getElementById('input')
+    const messages = document.getElementById('messages')
+
+    socket.on('chat message', (msg)=>{
+      const item = `<li>${msg}</li>`
+      messages.insertAdjacentHTML('beforeend', item)
+    })
 
     form.addEventListener('submit', (event)=>{
       event.preventDefault()
 
       if(input.value){
-        
+        socket.emit('chat message', input.value)
+        input.value = ''
       }
     })
   </script>
@@ -64,17 +71,18 @@
 
     #input {
       border-radius: 9999px;
-      border: qpx solid #eee;
+      border: 1px solid #eee;
       flex: 1;
       margin: 4px;
       padding: 0 8px;
     }
+
     #input:focus {
       outline: 0;
     }
 
     #form >button {
-      background: #09f;
+      background: rgb(0, 55, 184);
       color: #fff;
       border: 0;
       margin: 4px;
@@ -82,13 +90,30 @@
     }
 
     #form >button:hover {
-      background: #0cf;
+      background: rgb(0, 72, 255);
+    }
+
+    #messages {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      color: #fff;
+    }
+
+    #messages >li {
+      padding: .5rem 1rem;
+    }
+
+    #messages >li:nth-child(odd) {
+      background: #003980;
+      border-radius: 25px;
     }
 
   </style>
 </head>
 <body>
   <section id="chat">
+    <ul id="messages"></ul>
     <form id="form">
       <input type="text" name="message" id="input" placeholder="Type a message" autocomplete="off" />
       <button type="submit">Send</button>
